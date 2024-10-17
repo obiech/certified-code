@@ -45,71 +45,33 @@ import { RiderReviewEntity } from './entities/rider-review.entity';
 import { PayoutAccountEntity } from './entities/payout-account.entity';
 import { PayoutMethodEntity } from './entities/payout-method.entity';
 import { PayoutSessionEntity } from './entities/payout-session.entity';
+import { parse } from 'url';  // Import the 'url' module
 
 @Module({
-  imports: [
-    TypeOrmModule.forRootAsync({
-      useFactory: async () => {
-        Logger.log('TypeORM import started');
-        const dbName = process.env.MYSQL_DB || 'ridy';
-        const baseConn: ConnectionOptions = {
-          type: 'mysql',
-          host: process.env.MYSQL_HOST || 'localhost',
-          port: 3306,
-          username: process.env.MYSQL_USER || 'root',
-          password: process.env.MYSQL_PASS || 'defaultpassword',
-        };
-        const conn = await createConnection({ ...baseConn, name: 'ts' });
-        const databases = await conn.query(`SHOW DATABASES LIKE '${dbName}';`);
-        let shouldSync =
-          (databases as unknown[]).length < 1 ||
-          process.env.FORCE_SYNC_DB != null;
-        if (shouldSync) {
-          await conn.query(`CREATE DATABASE IF NOT EXISTS ${dbName}`);
-        }
-        //conn.query(`USE ${dbName}`);
-        const tables = await conn.query(`SHOW TABLES FROM ${dbName};`);
-        shouldSync =
-          (tables as unknown[]).length < 5 || process.env.FORCE_SYNC_DB != null;
-        Logger.log('type orm import finished');
-        return {
-          ...baseConn,
-          database: dbName,
-          autoLoadEntities: true,
-          legacySpatialSupport: false,
-          migrations: [`${__dirname}/migration/*.js`],
-          synchronize: shouldSync,
-          migrationsRun: false,
-          logging: false,
-        };
-      },
-    }),
-  ],
-  controllers: [],
-  providers: [],
-  exports: [],
-})
-export class DatabaseModule {
-  async onModuleInit() {
-    Logger.log('Module init started');
-    const conn = await createConnection({
-      name: 'mg',
-      type: 'mysql',
-      host: process.env.MYSQL_HOST || 'localhost',
-      port: 3306,
-      username: process.env.MYSQL_USER || 'root',
-      password: process.env.MYSQL_PASS || 'defaultpassword',
-      database: process.env.MYSQL_DB || 'ridy',
-      migrations: [`${__dirname}/migration/*.js`],
-      migrationsRun: true,
-      logging: false,
-    });
-    const migrationsOutput = await conn.runMigrations();
+imports: [
+  TypeOrmModule.forRootAsync({
+    useFactory: async () => {
+      const dbUrl = process.env.CLEARDB_PURPLE_URL;
+      const parsedUrl = parse(dbUrl);
 
-    Logger.log('Module init finished.');
-    Logger.log(`${migrationsOutput.length} Migrations done!`);
-  }
-}
+      return {
+        type: 'mysql',
+        host: parsedUrl.hostname,
+        port: 3306,
+        username: parsedUrl.auth?.split(':')[0],  // Extract username from URL
+        password: parsedUrl.auth?.split(':')[1],  // Extract password from URL
+        database: parsedUrl.pathname?.split('/')[1],  // Extract database name from URL
+        synchronize: false,
+        logging: false,
+        migrations: [`${__dirname}/migration/*.js`],
+        migrationsRun: false,
+      };
+    },
+  }),
+],
+})
+export class DatabaseModule {}
+
 
 export const entities = [
   MediaEntity,
