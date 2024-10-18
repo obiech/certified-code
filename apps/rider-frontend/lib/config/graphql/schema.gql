@@ -850,29 +850,6 @@ type RiderFavoriteDriversAggregateResponse {
   max: RiderFavoriteDriversMaxAggregate
 }
 
-type Login {
-  jwtToken: String!
-}
-
-type VerifyNumberDto {
-  """
-  If an existing user then the hash will be null, so the user can be logged in using password instead of OTP.
-  """
-  isExistingUser: Boolean!
-
-  """
-  Hash that will need to be passed in subsequent verify code call in order for match and verifcation to happen.
-  """
-  hash: String
-}
-
-type VerifcationResult {
-  jwtToken: String!
-  user: Rider!
-  hasPassword: Boolean!
-  hasName: Boolean!
-}
-
 type MediaEdge {
   """The node containing the Media"""
   node: Media!
@@ -1104,7 +1081,6 @@ input PointInput {
 }
 
 type Query {
-  requireUpdate(versionCode: Int!): VersionStatus!
   rider(
     """The id of the record to find."""
     id: ID!
@@ -1229,12 +1205,6 @@ type Query {
     """Specify to sort results."""
     sorting: [OrderMessageSort!]! = []
   ): [OrderMessage!]!
-}
-
-enum VersionStatus {
-  Latest
-  MandatoryUpdate
-  OptionalUpdate
 }
 
 input ServiceCategoryFilter {
@@ -1394,21 +1364,6 @@ enum PaymentGatewaySortFields {
 }
 
 type Mutation {
-  login(input: LoginInput!): Login!
-  deleteUser: Rider!
-  skipVerification(mobileNumber: String!): Login!
-
-  """
-  Returns a hash that will need to be passed in subsequent verify code call in order for match and verifcation to happen. Real sms is not sent in demo mode. It is 123456 by default.
-  """
-  verifyNumber(mobileNumber: String!, countryIso: String, forceSendOtp: Boolean): VerifyNumberDto!
-
-  """
-  Returns a JWT token if the code matches the hash. In demo mode the OTP is not sent. It is 123456 by default.
-  """
-  verifyOtp(hash: String!, code: String!): VerifcationResult!
-  verifyPassword(mobileNumber: String!, password: String!): VerifcationResult!
-  setPassword(password: String!): VerifcationResult!
   updateOneRider(input: UpdateOneRiderInput!): Rider!
   calculateFare(input: CalculateFareInput!): CalculateFareDTO!
   createOrder(input: CreateOrderInput!): Order!
@@ -1430,10 +1385,6 @@ type Mutation {
   updatePaymentMethodDefault(id: ID!, isDefault: Boolean!): [SavedPaymentMethod!]!
   updateLastSeenMessagesAt(orderId: ID!): Boolean!
   createOneOrderMessage(input: CreateOneOrderMessageInput!): OrderMessage!
-}
-
-input LoginInput {
-  firebaseToken: String!
 }
 
 input UpdateOneRiderInput {

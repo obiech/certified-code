@@ -51,6 +51,8 @@ import { PaymentEntity } from '@ridy/database/payment.entity';
 import { HttpModule } from '@nestjs/axios';
 import { OrderCancelReasonEntity } from '@ridy/database/order-cancel-reason.entity';
 import { OrderCancelReasonDTO } from './dto/cancel-reason.dto';
+import { FirebaseNotificationModule } from '@ridy/order/firebase-notification-service/firebase-notification-service.module';
+import { SharedOrderService } from '@ridy/order/shared-order.service';
 
 @Module({
   imports: [
@@ -68,6 +70,7 @@ import { OrderCancelReasonDTO } from './dto/cancel-reason.dto';
       ZonePriceEntity,
       PaymentEntity,
     ]),
+    FirebaseNotificationModule.register(),
     HttpModule,
     CommonCouponModule,
     GoogleServicesModule,
@@ -170,6 +173,7 @@ import { OrderCancelReasonDTO } from './dto/cancel-reason.dto';
     DriverNotificationService,
     RiderNotificationService,
     RedisPubSubProvider.provider(),
+    SharedOrderService,
   ],
   exports: [RiderOrderService],
 })

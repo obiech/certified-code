@@ -71,42 +71,39 @@ export class ConfigComponent implements OnInit, OnDestroy {
   async next() {
     switch (this.currentStep) {
       case 0: {
-        if (this.currentConfig.currentConfiguration.purchaseCode == null) {
-          this.msg.error('Purchase code is invalid.');
-          return;
-        }
-        const result = await firstValueFrom(
-          this.updatePurchaseGql.mutate({
-            code: this.currentConfig.currentConfiguration.purchaseCode ?? '',
-            email: this.email,
-          })
-        );
-        console.log(result);
-        if (
-          result.data?.updatePurchaseCode.status ==
-          UpdatePurchaseCodeStatus.ClientFound
-        ) {
-          this.clients =
-            result.data?.updatePurchaseCode.clients?.map(
-              (client) => client.ip
-            ) ?? [];
-          this.createClientsModal();
-          return;
-        }
-        if (
-          result.data?.updatePurchaseCode.status ==
-          UpdatePurchaseCodeStatus.Invalid
-        ) {
-          this.msg.error(
-            result.data.updatePurchaseCode.message ??
-              'An unknown error occured, please contact through the customer panel at support@ridy.io for more information.'
-          );
-        }
-        if (
-          result.data?.updatePurchaseCode.status == UpdatePurchaseCodeStatus.Ok
-        ) {
+        // if (this.currentConfig.currentConfiguration.purchaseCode == null) {
+        //   this.msg.error('Purchase code is invalid.');
+        //   return;
+        // }
+        // const result = await firstValueFrom(
+        //   this.updatePurchaseGql.mutate({
+        //     code: this.currentConfig.currentConfiguration.purchaseCode ?? '',
+        //     email: this.email,
+        //   })
+        // );
+        // console.log(result);
+        // if (true) {
+        //   this.clients =
+        //     result.data?.updatePurchaseCode.clients?.map(
+        //       (client) => client.ip
+        //     ) ?? [];
+        //   this.createClientsModal();
+        //   return;
+        // }
+        // if (
+        //   result.data?.updatePurchaseCode.status ==
+        //   UpdatePurchaseCodeStatus.Invalid
+        // ) {
+        //   this.msg.error(
+           
+        //       'An unknpport@ridy.io for more information.'
+        //   );
+        // }
+        // if (
+        //   true
+        // ) {
           this.currentStep += 1;
-        }
+        // }
         break;
       }
 

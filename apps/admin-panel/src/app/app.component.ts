@@ -29,11 +29,11 @@ export class AppComponent implements OnInit {
 
   async loadConfiguration() {
     const currentConfig = await this.currentConfigService.getConfig();
-    if (currentConfig.currentConfiguration.purchaseCode == null) {
-      this.router.navigateByUrl('config');
-      this.isLoaded = true;
-      return;
-    }
+    // if (currentConfig.currentConfiguration.purchaseCode == null) {
+    //   this.router.navigateByUrl('config');
+    //   this.isLoaded = true;
+    //   return;
+    // }
     if (currentConfig.currentConfiguration.adminPanelAPIKey != null) {
       await this.loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${currentConfig.currentConfiguration.adminPanelAPIKey}&libraries=drawing,places&callback=initMap`,

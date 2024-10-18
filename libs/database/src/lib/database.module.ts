@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConnectionOptions, createConnection } from 'typeorm';
+import { ConnectionOptions, createConnection, DataSource } from 'typeorm';
 import { CarColorEntity } from './entities/car-color.entity';
 import { CarModelEntity } from './entities/car-model.entity';
 import { ComplaintActivityEntity } from './entities/complaint-activity.entity';
@@ -45,33 +45,11 @@ import { RiderReviewEntity } from './entities/rider-review.entity';
 import { PayoutAccountEntity } from './entities/payout-account.entity';
 import { PayoutMethodEntity } from './entities/payout-method.entity';
 import { PayoutSessionEntity } from './entities/payout-session.entity';
-import { parse } from 'url';  // Import the 'url' module
-
-@Module({
-imports: [
-  TypeOrmModule.forRootAsync({
-    useFactory: async () => {
-      const dbUrl = process.env.CLEARDB_PURPLE_URL;
-      const parsedUrl = parse(dbUrl);
-
-      return {
-        type: 'mysql',
-        host: parsedUrl.hostname,
-        port: 3306,
-        username: parsedUrl.auth?.split(':')[0],  // Extract username from URL
-        password: parsedUrl.auth?.split(':')[1],  // Extract password from URL
-        database: parsedUrl.pathname?.split('/')[1],  // Extract database name from URL
-        synchronize: false,
-        logging: false,
-        migrations: [`${__dirname}/migration/*.js`],
-        migrationsRun: false,
-      };
-    },
-  }),
-],
-})
-export class DatabaseModule {}
-
+import { RequestActivityEntity } from './entities/request-activity.entity';
+// MYSQL_HOST=us-cluster-east-01.k8s.cleardb.net
+// MYSQL_USER=b50f282dae8a4a
+// MYSQL_PASS=1c0cfbc2
+// MYSQL_DB=heroku_5a5bdd156230275
 
 export const entities = [
   MediaEntity,
@@ -118,4 +96,147 @@ export const entities = [
   PayoutMethodEntity,
   PayoutAccountEntity,
   PayoutSessionEntity,
+  RequestActivityEntity,
 ];
+
+
+
+export const AppDataSource = new DataSource({
+  type: 'mysql',
+  host: 'us-cluster-east-01.k8s.cleardb.net',
+  port: 3306,
+  username: 'b50f282dae8a4a',
+  password: '1c0cfbc2',
+  database: 'heroku_5a5bdd156230275',
+  entities: entities,
+  migrations: [`${__dirname}/migration/*.js`],
+  synchronize: true,
+  logging: true,
+});
+
+@Module({
+  imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => {
+        Logger.log('TypeORM import started');
+        const dbName = 'heroku_5a5bdd156230275';
+        const baseConn: ConnectionOptions = {
+          type: 'mysql',
+          host: 'us-cluster-east-01.k8s.cleardb.net',
+          port: 3306,
+          username: 'b50f282dae8a4a' ,
+          password: '1c0cfbc2',
+          database: dbName,
+          // autoLoadEntities: true,
+          entities: entities, // Add your entities here
+          legacySpatialSupport: false,
+          migrations: [`${__dirname}/migration/*.js`],
+          synchronize: true,
+          migrationsRun: false,
+          logging: false,
+        };
+        Logger.log('TypeORM import finished');
+        return baseConn;
+      },
+    }),
+  ],
+  controllers: [],
+  providers: [],
+  exports: [],
+})
+// export class DatabaseModule {}
+
+// @Module({
+//   imports: [
+//     TypeOrmModule.forRootAsync({
+//       useFactory: async () => {
+//         Logger.log('TypeORM import started');
+//         const conn = await AppDataSource.initialize();
+//         Logger.log('TypeORM import finished');
+//         return {
+//           ...conn.options, // use options from initialized AppDataSource
+//           migrationsRun: false, // Disable auto-run migrations on boot
+//         };
+//       },
+      
+//     }),
+//   ],
+//   controllers: [],
+//   providers: [],
+//   exports: [],
+// })
+export class DatabaseModule {
+  async onModuleInit() {
+    Logger.log('Module init started');
+    const conn = await AppDataSource.initialize();
+    const migrationsOutput = await conn.runMigrations();
+    Logger.log('Module init finished.');
+    Logger.log(`${migrationsOutput.length} Migrations done!`);
+  }
+}
+
+// @Module({
+//   imports: [
+//     TypeOrmModule.forRootAsync({
+//       useFactory: async () => {
+//         Logger.log('TypeORM import started');
+//         const dbName = 'heroku_5a5bdd156230275' || 'ridy';
+//         const baseConn: ConnectionOptions = {
+//           type: 'mysql',
+//           host: 'us-cluster-east-01.k8s.cleardb.net' || 'localhost',
+//           port: 3306,
+//           username: 'b50f282dae8a4a' || 'root',
+//           password: '1c0cfbc2' || 'defaultpassword',
+//         };
+//         const conn = await createConnection({ ...baseConn, name: 'ts' });
+//         const databases = await conn.query(`SHOW DATABASES LIKE '${dbName}';`);
+//         let shouldSync =
+//           (databases as unknown[]).length < 1 ||
+//           process.env.FORCE_SYNC_DB != null;
+//         if (shouldSync) {
+//           await conn.query(`CREATE DATABASE IF NOT EXISTS ${dbName}`);
+//         }
+//         //conn.query(`USE ${dbName}`);
+//         const tables = await conn.query(`SHOW TABLES FROM ${dbName};`);
+//         shouldSync =
+//           (tables as unknown[]).length < 5 || process.env.FORCE_SYNC_DB != null;
+//         Logger.log('type orm import finished');
+//         return {
+//           ...baseConn,
+//           database: dbName,
+//           autoLoadEntities: true,
+//           legacySpatialSupport: false,
+//           migrations: [`${__dirname}/migration/*.js`],
+//           synchronize: shouldSync,
+//           migrationsRun: false,
+//           logging: false,
+//         };
+//       },
+//     }),
+//   ],
+//   controllers: [],
+//   providers: [],
+//   exports: [],
+// })
+// export class DatabaseModule {
+//   async onModuleInit() {
+//     Logger.log('Module init started');
+//     const conn = await createConnection({
+//       name: 'mg',
+//       type: 'mysql',
+//       host: process.env.MYSQL_HOST || 'localhost',
+//       port: 3306,
+//       username: process.env.MYSQL_USER || 'root',
+//       password: process.env.MYSQL_PASS || 'defaultpassword',
+//       database: process.env.MYSQL_DB || 'ridy',
+//       migrations: [`${__dirname}/migration/*.js`],
+//       migrationsRun: true,
+//       logging: false,
+//     });
+//     const migrationsOutput = await conn.runMigrations();
+
+//     Logger.log('Module init finished.');
+//     Logger.log(`${migrationsOutput.length} Migrations done!`);
+//   }
+// }
+

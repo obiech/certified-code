@@ -1064,29 +1064,6 @@ type RiderEdge {
   cursor: ConnectionCursor!
 }
 
-type Login {
-  jwtToken: String!
-}
-
-type VerifcationResult {
-  jwtToken: String!
-  user: Driver!
-  hasPassword: Boolean!
-  hasName: Boolean!
-}
-
-type VerifyNumberDto {
-  """
-  If an existing user then the hash will be null, so the user can be logged in using password instead of OTP.
-  """
-  isExistingUser: Boolean!
-
-  """
-  Hash that will need to be passed in subsequent verify code call in order for match and verifcation to happen.
-  """
-  hash: String
-}
-
 type Announcement {
   id: ID!
   userType: AnnouncementUserType!
@@ -1316,7 +1293,6 @@ type Query {
     """Specify to sort results."""
     sorting: [SavedPaymentMethodSort!]! = []
   ): [SavedPaymentMethod!]!
-  requireUpdate(versionCode: Int!): VersionStatus!
   orderAggregate(
     """Filter to find records to aggregate on"""
     filter: OrderAggregateFilter
@@ -1462,12 +1438,6 @@ enum PaymentGatewaySortFields {
   enabled
 }
 
-enum VersionStatus {
-  Latest
-  MandatoryUpdate
-  OptionalUpdate
-}
-
 input CarModelFilter {
   and: [CarModelFilter!]
   or: [CarModelFilter!]
@@ -1567,21 +1537,6 @@ type Mutation {
   updatePaymentMethodDefault(id: ID!, isDefault: Boolean!): [SavedPaymentMethod!]!
   redeemGiftCard(code: String!): GiftCard!
   sosSignal(orderId: ID!, location: PointInput): SOS!
-  login(input: LoginInput!): Login!
-  deleteUser: Driver!
-  skipVerification(mobileNumber: String!): Login!
-
-  """
-  Returns a hash that will need to be passed in subsequent verify code call in order for match and verifcation to happen. Real sms is not sent in demo mode. It is 123456 by default.
-  """
-  verifyNumber(mobileNumber: String!, countryIso: String, forceSendOtp: Boolean): VerifyNumberDto!
-
-  """
-  Returns a JWT token if the code matches the hash. In demo mode the OTP is not sent. It is 123456 by default.
-  """
-  verifyOtp(hash: String!, code: String!): VerifcationResult!
-  verifyPassword(mobileNumber: String!, password: String!): VerifcationResult!
-  setPassword(password: String!): VerifcationResult!
   updateOneOrder(input: UpdateOneOrderInput!): Order!
   updateDriversLocationNew(point: PointInput!): [Order!]!
   submitReview(input: RiderReviewInput!): Order!
@@ -1683,10 +1638,6 @@ input TopUpWalletInput {
   pin: Float
   otp: Float
   transactionId: String
-}
-
-input LoginInput {
-  firebaseToken: String!
 }
 
 input UpdateOneOrderInput {

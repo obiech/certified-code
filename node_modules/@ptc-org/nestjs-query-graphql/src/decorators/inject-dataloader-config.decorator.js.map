@@ -1,0 +1,1 @@
+{"version":3,"file":"inject-dataloader-config.decorator.js","sourceRoot":"","sources":["../../../../../packages/query-graphql/src/decorators/inject-dataloader-config.decorator.ts"],"names":[],"mappings":";;;AAAA,2CAAqD;AAErD,4FAAoF;AAE7E,MAAM,sBAAsB,GAAG,GAAG,EAAE,CAAC,IAAA,6BAAoB,EAAC,GAAG,EAAE,CAAC,IAAI,CAAC,CAAC,2DAA0B,CAAC,CAAA;AAA3F,QAAA,sBAAsB,0BAAqE"}

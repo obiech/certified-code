@@ -1,0 +1,1 @@
+{"version":3,"file":"inject-authorizer.decorator.js","sourceRoot":"","sources":["../../../../../packages/query-graphql/src/decorators/inject-authorizer.decorator.ts"],"names":[],"mappings":";;;AAAA,2CAAuC;AAGvC,kCAA4C;AAErC,MAAM,gBAAgB,GAAG,CAAM,QAAoB,EAAsB,EAAE,CAAC,IAAA,eAAM,EAAC,IAAA,yBAAkB,EAAC,QAAQ,CAAC,CAAC,CAAA;AAA1G,QAAA,gBAAgB,oBAA0F"}

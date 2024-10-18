@@ -1,0 +1,2 @@
+[2m> [22mtsc libs/database/src/lib/migration/*.ts --outDir dist/apps/admin-api
+

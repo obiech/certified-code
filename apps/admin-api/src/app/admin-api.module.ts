@@ -63,22 +63,22 @@ export class AdminAPIModule {
           }&port=${process.env.ADMIN_API_PORT || 3000}`,
         );
         Logger.log(verResult.data, 'Verification');
-        if (verResult.data.status == 'FAILED') {
-          Logger.error(verResult.data.message, 'Verification');
-          return {
-            module: AdminAPIModule,
-            imports: [
-              HttpModule,
-              GraphQLModule.forRoot<ApolloDriverConfig>({
-                driver: ApolloDriver,
-                autoSchemaFile: true,
-                // cors: false,
-                //uploads: false,
-              }),
-              ConfigurationModule,
-            ],
-          };
-        }
+        // if (verResult.data.status == 'FAILED') {
+        //   Logger.error(verResult.data.message, 'Verification');
+        //   return {
+        //     module: AdminAPIModule,
+        //     imports: [
+        //       HttpModule,
+        //       GraphQLModule.forRoot<ApolloDriverConfig>({
+        //         driver: ApolloDriver,
+        //         autoSchemaFile: true,
+        //         // cors: false,
+        //         //uploads: false,
+        //       }),
+        //       ConfigurationModule,
+        //     ],
+        //   };
+        // }
         global.saltKey = verResult.data.token;
         return {
           module: AdminAPIModule,

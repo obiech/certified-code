@@ -1,0 +1,1 @@
+{"version":3,"file":"inject-pub-sub.decorator.js","sourceRoot":"","sources":["../../../../../packages/query-graphql/src/decorators/inject-pub-sub.decorator.ts"],"names":[],"mappings":";;;AAAA,2CAAuC;AAEvC,kDAA6C;AAEtC,MAAM,YAAY,GAAG,GAAuB,EAAE,CAAC,IAAA,eAAM,EAAC,IAAA,0BAAW,GAAE,CAAC,CAAA;AAA9D,QAAA,YAAY,gBAAkD"}

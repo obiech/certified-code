@@ -29,8 +29,8 @@ export class FirebaseNotificationModule {
     return {
       module: FirebaseNotificationModule,
       imports: [],
-      providers: providers,
-      exports: providers,
+      providers: [DriverNotificationService, RiderNotificationService],
+      exports: [DriverNotificationService, RiderNotificationService],
     };
   }
 }

@@ -32,6 +32,8 @@ import { SharedFleetService } from './shared-fleet.service';
 import { SharedOrderService } from './shared-order.service';
 import { SharedProviderService } from './shared-provider.service';
 import { SharedRiderService } from './shared-rider.service';
+import { DriverNotificationService } from './firebase-notification-service/driver-notification.service';
+import { RiderNotificationService } from './firebase-notification-service/rider-notification.service';
 
 @Module({
   imports: [
@@ -71,6 +73,8 @@ import { SharedRiderService } from './shared-rider.service';
     SharedProviderService,
     SharedRiderService,
     SharedConfigurationService,
+    DriverNotificationService,
+    RiderNotificationService,  
   ],
   exports: [
     SharedDriverService,

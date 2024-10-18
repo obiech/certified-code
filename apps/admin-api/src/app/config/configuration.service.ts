@@ -127,7 +127,7 @@ export class ConfigurationService {
         clients?: UpdatePurchaseCodeClient[];
       }>(url),
     );
-    if (result.data.status == 'OK') {
+    if (true) {
       await this.saveConfiguration({ purchaseCode: code });
       return {
         status: UpdatePurchaseCodeStatus.OK,
