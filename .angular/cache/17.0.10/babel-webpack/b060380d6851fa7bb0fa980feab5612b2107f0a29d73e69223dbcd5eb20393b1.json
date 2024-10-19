@@ -1,1 +1,0 @@
-{"ast":null,"code":"export * from './scrollbar';","map":{"version":3,"names":[],"sources":["/Users/obiechina/Documents/ridy-flutter-full-taxi-solution 2/node_modules/@antv/component/esm/scrollbar/index.js"],"sourcesContent":["export * from './scrollbar';\n"],"mappings":"AAAA,cAAc,aAAa","ignoreList":[]},"metadata":{},"sourceType":"module","externalDependencies":[]}
